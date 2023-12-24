@@ -1,0 +1,72 @@
+break on
+
+include "libs\Dictionary.udf"
+
+
+Function firstUniqChar_1($s)
+    $firstUniqChar_1 = -1
+
+    For $i = 1 To len($s) :start
+        $c = subStr($s, $i, 1)
+
+        For $j = 1 To len($s)
+            $cc = subStr($s, $j, 1)
+
+            If $i <> $j And $c == $cc
+                $i = $i + 1
+                Goto "start"
+            EndIf
+
+        Next
+
+        $firstUniqChar_1 = $i-1
+        exit 0
+    Next
+EndFunction
+
+Function firstUniqChar_2($s)
+	Dictionary_Reset()
+    $firstUniqChar_2 = -1
+
+    For $i = 1 To len($s)
+        $c = subStr($s, $i, 1)
+		
+		$count = cInt( Dictionary_Get($c) ) + 1
+		Dictionary_Put($c, $count)
+    Next
+
+    For $i = 1 To len($s)
+		$c = subStr($s, $i, 1)
+        
+		If cInt( Dictionary_Get($c) ) == 1
+			$firstUniqChar_2 = $i-1
+			exit 0
+		EndIf
+    Next
+EndFunction
+
+Function firstUniqChar_3($s)
+	Dim
+		$curr_asc_code,
+		$a_asc_code,
+		$obj[26]
+	
+	$a_asc_code = 97 ; "a"
+    $firstUniqChar_3 = -1
+
+    For $i = 1 To len($s)
+		$curr_asc_code = asc(subStr($s, $i, 1))
+		
+		$obj[ $curr_asc_code - $a_asc_code ] =
+			$obj[ $curr_asc_code - $a_asc_code ] + 1
+    Next
+
+    For $i = 1 To len($s)
+		$curr_asc_code = asc(subStr($s, $i, 1))
+		
+		If $obj[ $curr_asc_code - $a_asc_code ] == 1
+			$firstUniqChar_3 = $i -1
+			exit 0
+		EndIf
+    Next
+EndFunction

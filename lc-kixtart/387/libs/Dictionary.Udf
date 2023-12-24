@@ -1,0 +1,349 @@
+Global
+	$__STR__Newvar__, $__ID__Newvar__
+;FUNCTION
+;				Dictionary_Put(), Dictionary_Get(), !(), Dictionary_Rename(),
+;				Dictionary_Remove(), Dictionary_RemoveIndexSpace(),
+;				Dictionary_ContainsKey(), Dictionary_List(), Dictionary_BytesOfMemory()
+;
+;AUTHOR			André Luiz (AlsCompanny@gmail.com)
+;
+;CONTRIBUTORS	André Luiz
+;               This UDF was based on the C# dictionary.
+;
+;ACTION		Creates a variable in the dictionary.
+;
+;SYNTAX		
+;				Dictionary_Put("Variable Name", Optional "Variable content", [RETURN ID]),
+;				Dictionary_Get("Name Var")/!("Name Var"), Dictionary_Rename("NameVar", "NewVar"),
+;				Dictionary_Remove("NameVar"), Dictionary_RemoveIndexSpace("NameVar"),
+;				Dictionary_ContainsKey("NameVar"), Dictionary_List(), Dictionary_BytesOfMemory("NameVar"[Optional])
+;
+;VERSION		1.0.0.6
+;DATE CREATED	12/02/2017
+;DATE MODIFIED	04/06/2018
+;
+;PARAMETERS 	
+;				Parameters 1
+;				Variable Name/Null{STRING}
+;
+;				Parameters 2
+;				Variable contents/Variable name{STRING}
+;
+;				Parameters 3
+;				It only works for "Dictionary_Put()", where it carries the ID of the variable being created at the moment.
+;				Note: If you use "Dictionary_Remove()" then the IDs will be changed.
+;
+;REMARKS		This Udf was developed for its own reason,
+;				but it brings you an interesting way to create your variables
+;				with any name and very easily manipulation.
+;				Putting the "physical" variables together with the collections, you have a
+;				possibilities. Each variable is passed and returned with its type.
+;
+;RETURNS		
+;		Dictionary_Put				[Procedure/Function(Return Index variable)]
+;			@Error = 0 ;;OK!
+
+;		Dictionary_Get|!				[Content of the variety in conjunction with the type.]
+;			@Error = 0 ;; OK!
+;			@Error = 6 ;; Not exist!
+
+;		Dictionary_Rename			[Procedure]
+;			@Error = 0 ;; OK!
+;			@Error = 1 ;; Not part of the dictionary.
+
+;		Dictionary_Remove			[Procedure]
+;			@Error = 0 ;; OK!
+;			@Error = 1 ;; Not part of the dictionary.
+
+;		Dictionary_RemoveIndexSpace	[Procedure]
+;			@Error = 0 ;; OK!
+;			@Error = 1 ;; Not part of the dictionary.
+
+;		Dictionary_ContainsKey		[Informs if it contains the key in the dictionary.]
+;			@Error = 0 ;; It's part of the dictionary.
+;			@Error = 1 ;; Not part of the dictionary.
+
+;		Dictionary_List				[Returns all items in the dictionary.]
+;			@Error = 0 ;; OK!
+;			@Error = 1 ;; It was not declared in the dictionary.
+
+;		Dictionary_Count			[Returns how many items in the dictionary.]
+;			@Error = 0 ;; OK!
+;			@Error = 1 ;; Empty dictionary.
+
+;		Dictionary_BytesOfMemory		[Returns the amount of memory used by this dictionary.]
+;			@Error = 0 ;; OK!
+;			@Error = 1 ;; Empty dictionary.
+
+;
+;DEPENDENCIES 	None
+;
+;KIXTART VER	4.50
+; 
+;Example(s)
+;
+
+;break on
+;Dictionary_Put('var1', '## Hello KiXtart ##')	;Declaring and assigning.
+;Dictionary_Put('types.name', 'André Luiz')		;Declaring and assigning.
+;Dictionary_Put('types.age', 20)				;Declaring and assigning.
+;Dictionary_ReWrite('types.age', 21)			;Rewriting.
+;;The same as doing Dictionary_Put('types.age', 21), however "Dictionary_ReWrite ()" is slightly faster.
+;
+;"## List of collections ##"?
+;'>Var = '+Join(Dictionary_List(), @Crlf+'>Var = ')???
+;
+;
+;"## Displaying Variables ##"??
+;Dictionary_Get('var1')?				;Returning the value of the variable.
+;'Name	: '+!('types.name')?			;Returning the value of the variable.
+;'Age	: '+Cstr(!('types.age'))???		;Returning the value of the variable.
+;
+;
+;
+;"## Additional Functions ##"??
+;if Dictionary_ContainsKey('var1')
+;	"OK! it's a collection!"??
+;else "It's not a collection!"??
+;endif
+;
+;Dictionary_BytesOfMemory()'Bytes'??			;Returns the size in bytes of the collection.
+;Dictionary_Remove('var1')'Removed - var1'??	;Removes a variable from the collection.
+;Dictionary_BytesOfMemory()'Bytes'??			;Returns the size in bytes of the collection.
+;
+;if Dictionary_ContainsKey('var1')
+;	"OK! it's a collection!"?
+;else "It's not a collection!"?
+;endif
+;get$
+
+;Source:
+function Dictionary_Put($VAR, Optional $text, Optional $return)
+	Dim
+		$ID
+	if (VarType($text) = 8)
+		$text = $text + CreateObject("")
+	endif
+	$ID = Ascan($__ID__Newvar__, $VAR)
+	if ($ID = -1)
+		$ID = Ubound($__ID__Newvar__) + 1
+		Redim
+			PRESERVE $__ID__Newvar__[$ID],
+			PRESERVE $__STR__Newvar__[$ID]
+	endif
+	$__ID__Newvar__[$ID]	= $VAR
+	$__STR__Newvar__[$ID]	= $text
+	if ($return) $Dictionary_Put = $ID endif
+	exit 0
+endfunction
+
+Function Dictionary_Reset()
+	Redim
+		PRESERVE $__ID__Newvar__[0],
+		PRESERVE $__STR__Newvar__[0]
+EndFunction
+
+function Dictionary_ReWrite($VAR, Optional $text)
+	Dim
+		$ID, $Dictionary_ReWrite
+	if (VarType($text) = 8)
+		$text = $text + CreateObject("")
+	endif
+
+	if (VarType($VAR) = 3)
+		$ID = $VAR
+	else
+		$ID = Ascan($__ID__Newvar__, $VAR)
+	endif
+
+	if ($ID < 0)
+		exit 1
+	endif
+	$__STR__Newvar__[$ID]	= $text
+	exit 0
+endfunction
+
+function !(Optional $VAR)
+	if isdeclared($VAR)
+		$! = Dictionary_Get($VAR)
+	endif
+endfunction
+
+function Dictionary_Get($VAR)
+	Dim
+		$ID
+
+	if (VarType($VAR) = 3)
+		$ID = $VAR
+	else
+		$ID = Ascan($__ID__Newvar__, $VAR)
+	endif
+
+	if ($ID >= 0)
+		;RETORNA CONTEUDO *
+		$Dictionary_Get = $__STR__Newvar__[$ID]
+		exit 0
+	else
+		;NOT EXIST *
+		$Dictionary_Get = CreateObject("") ;VARTYPE = 0
+		exit 1
+	endif
+endfunction
+
+function Dictionary_Rename($VAR, $ToVar)
+	Dim
+		$Dictionary_Rename
+	if (Ascan($__ID__Newvar__, $VAR) <> -1)
+		$Dictionary_Rename = AsCan($__ID__Newvar__, $VAR)
+		$__ID__Newvar__[$Dictionary_Rename] = $ToVar
+		exit 0
+	else
+		exit 1
+	endif
+endfunction
+
+function Dictionary_RemoveIndexSpace($VAR)
+	Dim
+		$Dictionary_RemoveIndexSpace
+
+	$Dictionary_RemoveIndexSpace = AsCan($__ID__Newvar__, $VAR)
+	if ($Dictionary_RemoveIndexSpace <> -1)
+		$__ID__Newvar__[$Dictionary_RemoveIndexSpace]	= ''
+		$__STR__Newvar__[$Dictionary_RemoveIndexSpace]	= ''
+		exit 0
+	else
+		exit 1
+	endif
+endfunction
+
+function Dictionary_Remove($VAR)
+	Dim
+		$Dictionary_Remove, $ub, $i
+	$Dictionary_Remove = AsCan($__ID__Newvar__, $VAR)
+	if ($Dictionary_Remove <> -1)
+		$ub = ubound($__ID__Newvar__)
+
+		if ($ub = 0)
+			$ub = $ub+1
+		endif
+
+		dim
+			$ID_Replace[$ub-1], $STR_Replace[$ub-1], $x
+		$x=-1
+		for $i=0 to ubound($__ID__Newvar__)
+			if ($i <> $Dictionary_Remove)
+				$x=$x+1
+				$ID_Replace[$x]		= $__ID__Newvar__[$i]
+				$STR_Replace[$x]	= $__STR__Newvar__[$i]
+			endif
+		next
+		$__ID__Newvar__		= $ID_Replace
+		$__STR__Newvar__	= $STR_Replace
+		exit 0
+	else
+		exit 1
+	endif
+endfunction
+
+function Dictionary_ContainsKey($VAR)
+	$Dictionary_ContainsKey = Ascan($__ID__Newvar__, $VAR)
+	If ($Dictionary_ContainsKey > -1)
+		$Dictionary_ContainsKey = 1
+		exit 0
+	else
+		$Dictionary_ContainsKey = 0
+		exit 1
+	endif
+endfunction
+
+function Dictionary_List()
+	if (Ubound($__ID__Newvar__) = -1) And (VarType($__ID__Newvar__) <> 8)
+		$Dictionary_List = "" ;;VARTYPE = 0
+		exit 1
+	else
+		$Dictionary_List = $__ID__Newvar__
+		if (Vartype($Dictionary_List) <> 8204)
+			Redim
+				$Dictionary_List[0]
+			$Dictionary_List[0] = $__ID__Newvar__
+		endif
+		exit 0
+	endif
+endfunction
+
+function Dictionary_Count()
+	$Dictionary_Count = Ubound($__ID__Newvar__)
+	if ($Dictionary_Count = -1)
+		exit 1
+	else
+		$Dictionary_Count = $Dictionary_Count
+		exit 0
+	endif
+endfunction
+
+function Dictionary_BytesOfMemory(Optional $VAR)
+	Dim
+		$Bytes, $Constant
+	$Constant			= 2
+	$Bytes				= 0
+	if (Trim($VAR) = '')
+		;RETORNA A MEMORIA DE TODA A COLEÇÃO *
+		Dim
+			$TextNow
+		for each $TextNow in Dictionary_List()
+			$Bytes = $Bytes+Dictionary_BytesOfMemory($TextNow)
+		next
+		$Dictionary_BytesOfMemory = $Bytes
+		exit 0
+	else
+		if not Dictionary_ContainsKey($VAR)
+			$Dictionary_BytesOfMemory = -1
+			Exit 1
+		endif
+	endif
+	$VAR						= Dictionary_Get($VAR)
+	$Dictionary_BytesOfMemory	= VarType($VAR)
+	Select
+		Case ($Dictionary_BytesOfMemory = 0)
+			$Bytes = $Constant
+		Case ($Dictionary_BytesOfMemory = 8)
+			$Bytes = Len($VAR)+$Constant
+		Case ($Dictionary_BytesOfMemory = 5) Or ($Dictionary_BytesOfMemory = 4)
+			$Bytes = 8+$Constant
+		Case ($Dictionary_BytesOfMemory = 3)
+			$Bytes = 2+$Constant
+		Case ($Dictionary_BytesOfMemory = 8204)
+			Dim
+				$dim1, $dim2
+			for each $dim1 in $VAR
+				if (Vartype($dim1) = 8204)
+					for each $dim2 in $dim1
+						select
+							Case ($Dictionary_BytesOfMemory = 0)
+								$Bytes = $Constant
+							Case (VarType($dim2) = 8)
+								$Bytes = $Bytes + Len($dim2)+$Constant
+							Case (VarType($dim2) = 5) Or (VarType($dim2) = 4)
+								$Bytes = $Bytes+8+$Constant
+							Case (VarType($dim2) = 3)
+								$$Bytes = $Bytes+2+$Constant
+						endselect
+					next
+				else
+					select
+						Case ($Dictionary_BytesOfMemory = 0)
+							$Bytes = $Constant
+						Case (VarType($dim1) = 8)
+							$Bytes = $Bytes + Len($dim1)
+						Case (VarType($dim1) = 5) Or (VarType($dim1) = 4)
+							$Bytes = $Bytes+8
+						Case (VarType($dim1) = 3)
+							$$Bytes = $Bytes+2
+					endselect
+				endif
+				$Bytes = $Bytes+Ubound($VAR)+$Constant
+			next
+	EndSelect
+	$Dictionary_BytesOfMemory = $Bytes
+	exit 0
+endfunction

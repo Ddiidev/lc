@@ -1,0 +1,125 @@
+break on
+
+include "libs\TimeDiff.udf"
+include "libs\AlsString.udf"
+include "main.kix"
+
+$smallStringRepeating    = "abcdefghjiklmnopqrstuvwxyzzyxwvutsrqponmlkjihgfedcba"
+$smallStringNonRepeating = "bcdefghjiklmnopqrstuvwxyzzyxwvutsrqponmlkjihgfedcba"
+;; Deveria ser 100000 caracteres z, porém a linguagem não suporta tamanha operação, mas 10000 já é suficiente pra demostrar as diferenças.
+$largeStringRepeating = "abcdefghjiklmnopqrstuvwxyz" +  RepeatStr("z", 10000) + "zyxwvutsrqponmlkjihgfedcba"
+$largeStringNonRepeating = "bcdefghjiklmnopqrstuvwxyz" + RepeatStr("z", 10000) + "zyxwvutsrqponmlkjihgfedcba"
+$separator = "--------------------------------------"
+main()
+
+
+Function main()
+	$separator?
+	bench_smallStringRepeating()
+
+	$separator?
+	bench_smallStringNonRepeating()
+
+	$separator?
+	bench_largeStringRepeating()
+
+	$separator?
+	bench_largeStringNonRepeating()
+EndFunction
+
+
+Function bench_smallStringRepeating()
+	"BENCH_SMALLSTRINGREPEATING"?
+	Dim $
+	$start_t = "@TIME.@msecs"
+
+	$=firstUniqChar_1($smallStringRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n²) | bench_smallStringRepeating()")
+	
+	
+	$start_t = "@TIME.@msecs"
+	
+	$=firstUniqChar_2($smallStringRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n) | bench_smallStringRepeating()")
+
+
+	$start_t = "@TIME.@msecs"
+	
+	$=firstUniqChar_3($smallStringRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n)  | small alocation | bench_smallStringRepeating()")
+EndFunction
+
+
+Function bench_smallStringNonRepeating()
+	"BENCH_SMALLSTRINGREPEATING"?
+	Dim $
+	$start_t = "@TIME.@msecs"
+
+	$=firstUniqChar_1($smallStringNonRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n²) | bench_smallStringNonRepeating()")
+	
+	
+	$start_t = "@TIME.@msecs"
+	
+	$=firstUniqChar_2($smallStringNonRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n) | bench_smallStringNonRepeating()")
+
+
+	$start_t = "@TIME.@msecs"
+	
+	$=firstUniqChar_3($smallStringNonRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n)  | small alocation | bench_smallStringNonRepeating()")
+EndFunction
+
+
+Function bench_largeStringRepeating()
+	"BENCH_LARGESTRINGREPEATING"?
+	Dim $
+	$start_t = "@TIME.@msecs"
+
+	$=firstUniqChar_1($largeStringRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n²) | bench_largeStringRepeating()")
+	
+	
+	$start_t = "@TIME.@msecs"
+	
+	$=firstUniqChar_2($largeStringRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n) | bench_largeStringRepeating()")
+
+
+	$start_t = "@TIME.@msecs"
+	
+	$=firstUniqChar_3($largeStringRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n)  | small alocation | bench_largeStringRepeating()")
+EndFunction
+
+Function bench_largeStringNonRepeating()
+	"BENCH_LARGESTRINGNONREPEATING"?
+	Dim $
+	$start_t = "@TIME.@msecs"
+
+	$=firstUniqChar_1($largeStringNonRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n²) | bench_largeStringNonRepeating()")
+	
+	
+	$start_t = "@TIME.@msecs"
+	
+	$=firstUniqChar_2($largeStringNonRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n) | bench_largeStringNonRepeating()")
+
+
+	$start_t = "@TIME.@msecs"
+	
+	$=firstUniqChar_3($largeStringNonRepeating)
+	PrintResultTimeDiff($start_t, "@TIME.@msecs", "O(n)  | small alocation | bench_largeStringNonRepeating()")
+EndFunction
+
+Function PrintResultTimeDiff($startTime, $endTime, $text)
+	Dim $diff_t
+	$diff_t = TimeDiff($startTime, $endTime)
+	
+	$diff_t "ms in " $text?
+EndFunction
+
+
+
