@@ -12,7 +12,6 @@ $largeStringNonRepeating = "bcdefghjiklmnopqrstuvwxyz" + RepeatStr("z", 10000) +
 $separator = "--------------------------------------"
 main()
 
-
 Function main()
 	$separator?
 	bench_smallStringRepeating()
