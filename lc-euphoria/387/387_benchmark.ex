@@ -41,19 +41,19 @@ procedure bench_small_string_repeating()
     
     main:firstUniqChar_1(small_string_repeating)
     
-    printf(1, "%g ms  O(n2) | bench_small_string_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n2) | bench_small_string_repeating()\n", {time() - t})
     
     t = time()
     
     main:firstUniqChar_2(small_string_repeating)
     
-    printf(1, "%g ms  O(n) | bench_small_string_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n) | bench_small_string_repeating()\n", {time() - t})
     
     t = time()
     
     main:firstUniqChar_3(small_string_repeating)
     
-    printf(1, "%g ms  O(n) | small allocation | bench_small_string_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n) | small allocation | bench_small_string_repeating()\n", {time() - t})
 end procedure
 
 
@@ -64,19 +64,19 @@ procedure bench_small_string_non_repeating()
     
     main:firstUniqChar_1(small_string_non_repeating)
     
-    printf(1, "%g ms  O(n2) | bench_small_string_non_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n2) | bench_small_string_non_repeating()\n", {time() - t})
     
     t = time()
     
     main:firstUniqChar_2(small_string_non_repeating)
     
-    printf(1, "%g ms  O(n) | bench_small_string_non_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n) | bench_small_string_non_repeating()\n", {time() - t})
     
     t = time()
     
     main:firstUniqChar_3(small_string_non_repeating)
     
-    printf(1, "%g ms  O(n) | small allocation | bench_small_string_non_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n) | small allocation | bench_small_string_non_repeating()\n", {time() - t})
 end procedure
 
 
@@ -87,19 +87,19 @@ procedure bench_large_string_repeating()
     
     main:firstUniqChar_1(large_string_repeating)
     
-    printf(1, "%g ms  O(n2) | bench_large_string_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n2) | bench_large_string_repeating()\n", {time() - t})
     
     t = time()
     
     main:firstUniqChar_2(large_string_repeating)
     
-    printf(1, "%g ms  O(n) | bench_large_string_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n) | bench_large_string_repeating()\n", {time() - t})
     
     t = time()
     
     main:firstUniqChar_3(large_string_repeating)
     
-    printf(1, "%g ms  O(n) | small allocation | bench_large_string_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n) | small allocation | bench_large_string_repeating()\n", {time() - t})
 end procedure
 
 procedure bench_large_string_non_repeating()
@@ -109,17 +109,17 @@ procedure bench_large_string_non_repeating()
     
     main:firstUniqChar_1(large_string_non_repeating)
     
-    printf(1, "%g ms  O(n2) | bench_large_string_non_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n2) | bench_large_string_non_repeating()\n", {time() - t})
     
     t = time()
     
     main:firstUniqChar_2(large_string_non_repeating)
     
-    printf(1, "%g ms  O(n) | bench_large_string_non_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n) | bench_large_string_non_repeating()\n", {time() - t})
     
     t = time()
     
     main:firstUniqChar_3(large_string_non_repeating)
     
-    printf(1, "%g ms  O(n) | small allocation | bench_large_string_non_repeating()\n", {time() - t})
+    printf(1, "%.4f ms  O(n) | small allocation | bench_large_string_non_repeating()\n", {time() - t})
 end procedure
