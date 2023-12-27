@@ -1,0 +1,20 @@
+﻿----------------------------------------
+BENCHSMALLSTRINGREPEATING
+1.148ms O(n²) | BenchSmallStringRepeating()
+15.197ms O(n) | BenchSmallStringRepeating()
+0.941ms O(n) | small allocation | BenchSmallStringRepeating()
+----------------------------------------
+BENCHSMALLSTRINGNONREPEATING
+0.159ms O(n²) | BenchSmallStringNonRepeating()
+0.127 ms O(n) | BenchSmallStringNonRepeating()
+0.009ms O(n) | small allocation | BenchSmallStringNonRepeating()
+----------------------------------------
+BENCHLARGESTRINGREPEATING
+7.956ms O(n²) | BenchLargeStringRepeating()
+60.713ms O(n) | BenchLargeStringRepeating()
+3.856ms O(n) | small allocation | BenchLargeStringRepeating()
+----------------------------------------
+BENCHLARGESTRINGNONREPEATING
+0.819ms O(n²) | BenchLargeStringNonRepeating()
+58.015ms O(n) | BenchLargeStringNonRepeating()
+0.663ms O(n) | small allocation | BenchLargeStringNonRepeating()
